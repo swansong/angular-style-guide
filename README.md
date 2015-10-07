@@ -38,12 +38,13 @@ Don't be overly verbose. Services get injected into controllers all the time, wh
 This looks important, singular, and to the point.
 
 All files in the module should be in the same folder in the filesystem and contain the module namespace:
-  --sample/
-    --sample.directive.js
-    --sample.controller.js
-    --sample.index.html
-    --sample.module.js
-    --sample.service.js
+
+    --sample/
+        --sample.directive.js
+        --sample.controller.js
+        --sample.index.html
+        --sample.module.js
+        --sample.service.js
 
 ### Controllers ###
 Each module will probably only have one controller. That controller should have a corresponding directive, and the name of the controller file should match the name of the directive file. 'whatever.directive.js' should have its controller in 'whatever.controller.js'. The name of the actual controller should match the filename. The actual controller in 'whatever.controller.js' should be 'whateverController'.
