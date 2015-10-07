@@ -19,25 +19,25 @@ Module hierarchy should not be present in the naming scheme. No modules named 'a
 ### Services and Factories ###
 Services and Factories should be capital cased and should *not* contain the word 'service' or 'factory'. They should simply describe what exactly it is they do in as few words as possible, ideally just one word.
 
-Not recommended:
+*Not recommended:*
 
     angular.module('core')
       .service('sample', sample);
 Lowercase names don't impart the importance/singularity (for your singletons!) of a name that looks like a proper noun
 
-Not recommended:
+*Not recommended:*
 
     angular.module('core')
       .service('SampleService', SampleService);
 Don't be overly verbose. Services get injected into controllers all the time, whereas controllers stand alone. Don't complicate those injections with unneeded characters.
 
-Recomended:
+*Recommended:*
 
     angular.module('core')
       .service('Sample', Sample);
 This looks important, singular, and to the point.
 
-All files in the module should be in the same folder in the filesystem and be named similarly:
+All files in the module should be in the same folder in the filesystem and contain the module namespace:
   --sample/
     --sample.directive.js
     --sample.controller.js
@@ -46,7 +46,7 @@ All files in the module should be in the same folder in the filesystem and be na
     --sample.service.js
 
 ### Controllers ###
-Controllers should have corresponding directives, and the name of the controller file should match the name of the directive file. 'whatever.directive.js' should have its controller in 'whatever.controller.js'. The name of the actual controller should match the filename. The actual controller in 'whatever.controller.js' should be 'whateverController'.
+Each module will probably only have one controller. That controller should have a corresponding directive, and the name of the controller file should match the name of the directive file. 'whatever.directive.js' should have its controller in 'whatever.controller.js'. The name of the actual controller should match the filename. The actual controller in 'whatever.controller.js' should be 'whateverController'.
 
 Controllers *do* have Controller in the name. ControllerAs syntax should replace Controller with View in the name:
 
@@ -63,25 +63,25 @@ This keeps a reference to the controller (the proper value of 'this') available 
 ### Directives ###
 As with all the other things, a directive should be as short and to the point as possible. One of the best reasons to use directives often is the ability to create highly semantic HTML that is easy to understand at a glance. Overly generic or overly verbose names undermine that benefit.
 
-Not recommended:
+*Not recommended:*
 
     <galleries-list-without-ability-to-add-new-one></galleries-list-without-ability-to-add-new-one>
 This describes the directive in detail but it is crazy specific and verbose. Be more general and flexible.
 
-Not recommended:
+*Not recommended:*
 
     <list></list>
 List of what?
 
-Recommended:
+*Recommended:*
 
     <gallery-list></gallery-list>
 Basic purpose easily discernable, generic enough to be flexible with addition of attributes
 
-The name of a directive file should match the directive. A directive named 'sampleThingList' should be in a file called 'sampleThingList.directive.js'
+Directives need not have controllers, but will almost always have templates. Every module that templates out HTML should have a directive at the root of the module's namespace ('whatever.directive.js'). For other directives in the module, the name of a directive file should match the directive and contain the module's namespace. A directive named 'thingList' in the 'whatever' module should be in a file called 'whatever.thingList.directive.js'
 
 ### Templates/Views ###
-The main HTML file for a module should always be whatever.index.html. Index is synonymous with root/main file, and the 'whatever' namespace indicates that it is just the main template for that piece of the app. Additional sub-components can have other names. For example, in the 'sample' module, the template for 'sampleThingList' directive should probably be 'sample.thingList.html'
+The main HTML file for a module should always be 'whatever.index.html'. Index is synonymous with root/main file, and the 'whatever' namespace indicates that it is just the main template for that piece of the app. This will also be the template file for the root directive of that module. Additional sub-components can have other names. For example, in the 'sample' module, the template for a 'thingList' directive in the 'whatever' module should probably be 'whatever.thingList.html'.
 
 ### Variables and Functions ###
 Keep the names as short and descriptive as possible. A coder, understanding the context of where the variable or function appears, should be able to easily guess what a function does or what purpose a variable serves and what data it is likely to contain.
