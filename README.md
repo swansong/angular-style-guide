@@ -88,3 +88,63 @@ The main HTML file for a module should always be 'whatever.index.html'. Index is
 
 ### Variables and Functions ###
 Keep the names as short and descriptive as possible. A coder, understanding the context of where the variable or function appears, should be able to easily guess what a function does or what purpose a variable serves and what data it is likely to contain.
+
+In general, functions should be named. Callback functions *may* require more than what gets passed along with, say, an event. In that case, an inline function is required, but it's purpose should be to invoke a named function with the extra data required by that named function.
+
+Services, Factories and Providers
+---------------------------------
+
+These things are all really the same: singletons that can be injected into controllers. There will only ever be one instance of each defined service, factory or provider in your app.
+
+**Factory:** return a simple object that can be configured in the function. That object is shared amongst all controllers that use it, but individual functions that are returned can be instantiated ('newed') differently for different controllers.
+
+**Service:** same simple object, but newable and instantiated. Internally, attach public methods and properties to "this" and leave private things as variables. Simple and easy. When in doubt, use this one. It's really the most straightforward of the three options.
+
+**Provider:** The basis for both factory and service, but more complex than either. Essentially a configurable service. this.$get is a function that will run in the config stage of Angular, so if you're making a service that needs to be configured before the app runs this is the one to use.
+
+### Service Best Practices ###
+Attach 'this' to a variable named 'self' at the top to preserve the proper context of this.
+
+    angular
+      .module('sample')
+      .service('Sample', Sample);
+    
+    function Sample() {
+      var self = this;
+
+Services are especially useful for acting as the data source for controllers. They can store data in private variables that multiple instances of controllers can ask for (as opposed to creating the data themselves) and act as a go-between for the controllers/view logic and the backend app by containing all the ajax request methods.
+
+Controllers should not be expected to know whether or not the data is coming from stuff stored in the Service or stuff stored in the database and fetched via ajax. Always return a promise when returning data that might be fetched from a server.
+
+Keep data private as much as possble. Use getter and setters. Always try to keep variables like lookups or data lists referring to the same object in memory. This means manipulating the existing list or object instead of just assigning a new list or object. If controllers rely on the references returned in getters for view logic, orphaning that reference will cause issues with the view if the data changes.
+
+Controllers
+-----------
+
+The sole purpose of Controllers in Angular is to take data and organize it for templating out in the HTML. Controllers should be as skinny as possible and restricted to view logic.
+
+Ajax requests should be relegated to a Service and the Service function can be invoked by the Controller.
+
+DOM manipulation should be relegated to the link function in a Directive and the Controller can trigger an event if necessary that the Directive is listening for. Directives and controllers share the same $scope, so when doing this, just $scope.$broadcast your event in the controller. No need to $emit up the scope tree or $broadcast from $rootScope down the scope tree.
+
+In your templates, you might need to use a lookup stored in a service to provide feedback to the user. Don't attach the Service to the view, just save a reference to the lookup in the view.
+
+    //not recommended:
+    sampleView.Service = Service;
+This gives the view access to ALL of a Service's functions and properties, not just the one specific thing we need. Overkill, and potentially dangerous.
+
+    //recommended:
+    sampleView.serviceLookup = Service.getLookup();
+Assuming Service.getLookup() returns that lookup, you have a reference to that lookup that should be mutable by the Service as long as your reference isn't orphaned.
+
+When listening to events in the Controller, *don't* listen on $rootScope. That listener will persist as long as $rootScope does. Listen on $scope, as that will only last as long as the Controller.
+
+    //not recommended
+    $rootScope.$on('whateverEvent' functionName);
+This will keep a the controller around well after you expect it to be destroyed, and potentially leave you with multiple instances of the controller and multiple event callbacks running when there should only be one of each.
+
+    //recommended
+    $scope.$on('whateverEvent', functionName);
+This listener will be destroyed with the Controller's $scope.
+
+If you need to send events to other Controllers, use $rootScope.$broadcast. Angular (as of 1.3) is smart enough to only send that event places that you're listening for it instead of everywhere.
