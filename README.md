@@ -167,7 +167,7 @@ This gives the view access to ALL of a Service's functions and properties, not j
 
     //recommended:
     sampleView.serviceLookup = Service.getLookup();
-Assuming Service.getLookup() returns that lookup, you have a reference to that lookup that should be mutable by the Service as long as your reference isn't orphaned.
+Assuming Service.getLookup() returns that lookup, you have a reference to that lookup that should be mutable by the Service as long as your reference isn't orphaned. 
 
 When listening to events in the Controller, *don't* listen on $rootScope. That listener will persist as long as $rootScope does. Listen on $scope, as that will only last as long as the Controller.
 
@@ -180,3 +180,18 @@ This will keep a the controller around well after you expect it to be destroyed,
 This listener will be destroyed with the Controller's $scope.
 
 If you need to send events to other Controllers, use $rootScope.$broadcast. Angular (as of 1.3) is smart enough to only send that event places that you're listening for it instead of everywhere.
+
+
+Directives
+----------
+Use them. Any time you have some repeated HTML associated with a component, consider a directive.
+
+Use directives instead of ng-includes. If it's worth separating out into a different file, it's worth creating a directive for.
+
+There are a three functions you can add to a directive: compile, controller and link.
+
+*complile:* This happens first, useful for transforming the template itself. Usually not necessary. Will require that you return a link function if you want a link function.
+
+*controller:* never write this inline. Use a named controller in a separate file and use controllerAs.
+
+*link:* there are pre-link and post-link functions which will run before and after link (respectively), but link is the most important. This is where you add DOM events and manipulate the DOM.
