@@ -49,11 +49,11 @@ All files in the module should be in the same folder in the filesystem and conta
         --sample.service.js
 
 ### Controllers ###
-Each module will probably only have one controller. That controller should have a corresponding directive, and the name of the controller file should match the name of the directive file. 'whatever.directive.js' should have its controller in 'whatever.controller.js'. The name of the actual controller should match the filename. The actual controller in 'whatever.controller.js' should be 'whateverController'.
+Each controller should have a corresponding directive, and the name of the controller file should match the name of the directive file. 'whatever.directive.js' should have its controller in 'whatever.controller.js'. The name of the actual controller should match the filename. The actual controller in 'whatever.controller.js' should be 'whateverController'.
 
-Controllers *do* have Controller in the name. ControllerAs syntax should replace Controller with View in the name:
+Controllers *do* have Controller in the name. Use controllerAs syntax and replace Controller with View in the controllerAs:
 
-    sampleController as sampleView
+    SampleController as sampleView
 
 The 'whateverView' convention is preferred over 'whateverCtrl' or 'whateverController' for controllerAs because this is the variable name that will appear in the HTML template, which is the view in MVC. The controller itself can have more functionality than what is exposed in the view, and the 'whateverView' name makes it clear that everything saved on the controller object directly will be available in the view/template.
 
@@ -62,6 +62,28 @@ At the top of the controller, save a reference to 'this' as whateverView:
     var whateverView = this;
 
 This keeps a reference to the controller (the proper value of 'this') available at all times (including event handlers) and keeps your variable names consistent. A reference to whateverView.property in the template/view will directly correspond to whateverView.property in the controller.
+
+Controller function names are CapitalCase ('SampleThingController'), names of instantiated controllers are camelCase ('sampleThingView'). We follow this convention because your defined controller function is a contstructor, a singular thing that will be used to make many instances of that controller.
+
+    //not recommended
+    angular
+      .module('sample')
+      .controller('sampleController', sampleController);
+      
+    function sampleController () {
+        var sampleView = this;
+    }
+Linters will complain about the assignment of 'this' because a camelCased function doesn't register as a constructor.
+
+    //recommended
+    angular
+      .module('sample')
+      .controller('SampleController', SampleController);
+      
+    function SampleController () {
+        var sampleView = this;
+    }
+SampleController registers as a constructor function
 
 ### Directives ###
 As with all the other things, a directive should be as short and to the point as possible. One of the best reasons to use directives often is the ability to create highly semantic HTML that is easy to understand at a glance. Overly generic or overly verbose names undermine that benefit.
@@ -81,7 +103,17 @@ List of what?
     <gallery-list></gallery-list>
 Basic purpose easily discernable, generic enough to be flexible with addition of attributes
 
-Directives need not have controllers, but will almost always have templates. Every module that templates out HTML should have a directive at the root of the module's namespace ('whatever.directive.js'). For other directives in the module, the name of a directive file should match the directive and contain the module's namespace. A directive named 'thingList' in the 'whatever' module should be in a file called 'whatever.thingList.directive.js'
+Directives need not have controllers. If there is a controller for the directive, it is named and not an inline function.
+
+    //not recommended
+    controller: function (Dependency) { },
+this can and will get messy
+
+    //recommended
+    controller: DirectiveNameController,
+    controllerAs: directiveNameView,
+
+Directives will almost always have templates. Every module that templates out HTML should have a directive at the root of the module's namespace ('whatever.directive.js'). For other directives in the module, the name of a directive file should match the directive and contain the module's namespace. A directive named 'thingList' in the 'whatever' module should be in a file called 'whatever.thingList.directive.js'. If there's an associated controller, it should be called 'WhateverThingListController'.
 
 ### Templates/Views ###
 The main HTML file for a module should always be 'whatever.index.html'. Index is synonymous with root/main file, and the 'whatever' namespace indicates that it is just the main template for that piece of the app. This will also be the template file for the root directive of that module. Additional sub-components can have other names. For example, in the 'sample' module, the template for a 'thingList' directive in the 'whatever' module should probably be 'whatever.thingList.html'.
