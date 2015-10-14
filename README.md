@@ -127,7 +127,7 @@ In general, functions should be named. Callback functions *may* require more tha
 
 Private variables that won't change are constants. Name them as such (eg: CONTSTANT_NAME).
 
-*Don't* use _functionName notation to denote a private function. A private function is just one that isn't bound to "this" and therefore isn't exposed outside of the parent function. Binding a function to "this" happens *before* any function implementation details, so all the public functions should be readily visible up at the top of an object.
+*Don't* use underscore notation (ie: _functionName) to denote a private function. A private function is just one that isn't bound to "this" and therefore isn't exposed outside of the parent function, so just name it and invoke it normally. Binding a function to "this" happens *before* any function implementation details, so all the public functions should be readily visible up at the top of an object.
 
 If you need to unit test a private function and simply testing the public functions that use the private function is insufficient, expose it through a "utils" object attached to "this":
 
