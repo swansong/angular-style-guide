@@ -123,6 +123,22 @@ Keep the names as short and descriptive as possible. A coder, understanding the 
 
 In general, functions should be named. Callback functions *may* require more than what gets passed along with, say, an event. In that case, an inline function is required, but it's purpose should be to invoke a named function with the extra data required by that named function.
 
+#### Private functions/variables ####
+
+Private variables that won't change are constants. Name them as such (eg: CONTSTANT_NAME).
+
+*Don't* use _functionName notation to denote a private function. A private function is just one that isn't bound to "this" and therefore isn't exposed outside of the parent function. Binding a function to "this" happens *before* any function implementation details, so all the public functions should be readily visible up at the top of an object.
+
+If you need to unit test a private function and simply testing the public functions that use the private function is insufficient, expose it through a "utils" object attached to "this":
+
+    //self.utils = {
+        privateFunctionOne: privateFunctionOne,
+        privateFunctionTwo: privateFunctionTwo
+    }
+Remember that unit tests only have value if they test things that might actually happen. If you can't use a combination of state and inputs for public functions to generate bad inputs to a private function, your program isn't going to be able to do so either.
+
+Don't put private variables in utils.
+
 Services, Factories and Providers
 ---------------------------------
 
