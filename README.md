@@ -169,7 +169,7 @@ Keep data private as much as possble. Use getter and setters. Always try to keep
 Controllers
 -----------
 
-The sole purpose of Controllers in Angular is to take data and organize it for templating out in the HTML. Controllers should be as skinny as possible and restricted to view logic.
+The sole purpose of Controllers in Angular is to take data and organize it for templating out in the HTML. Controllers should be as skinny as possible and restricted to view logic. This means only methods that will be called from the html and local variables that will be templated out. The controller should be aware of as little as possible. Models (aka templated data) should come from services and be saved by reference. All operations on the model should happen in the service.
 
 Ajax requests should be relegated to a Service and the Service function can be invoked by the Controller.
 
